@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SwiftSphere - Online Store</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#f8fafc;color:#111;transition:.3s}
+body.dark{background:#0f172a;color:white}
+body.dark .card{background:#1e293b;color:white;border-color:#334155}
+body.dark .box{background:#1e293b;color:white}
+body.dark .search input{background:#1e293b;color:white;border-color:#334155}
+header{background:#0f172a;color:white;padding:15px 15px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10;flex-wrap:wrap;gap:8px}
+header b{font-size:21px} header b span{color:#38bdf8}
+button{background:#2563eb;color:white;border:0;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:bold}
+.hero{background:linear-gradient(135deg,#2563eb,#0ea5e9);color:white;text-align:center;padding:45px 20px}
+.hero h1{font-size:32px} .hero p{margin:12px 0;opacity:.9}
+.search{padding:18px;text-align:center;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.search input{padding:12px;width:70%;max-width:350px;border:1px solid #ddd;border-radius:20px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;padding:0 15px 30px}
+.card{border:1px solid #eee;border-radius:15px;overflow:hidden;background:white;box-shadow:0 2px 10px #0001;position:relative}
+.card img{width:100%;height:150px;object-fit:cover;background:#eee}
+.card div{padding:12px} .price{color:#2563eb;font-weight:bold;font-size:18px;margin:6px 0}
+.card button{width:100%;margin-top:8px}
+.favBtn{position:absolute;top:10px;right:10px;background:white!important;color:#111!important;width:38px!important;height:38px;border-radius:50%!important;padding:0!important;font-size:20px;box-shadow:0 2px 8px #0003}
+.favBtn.active{background:#fee2e2!important;color:red!important}
+.modal{display:none;position:fixed;inset:0;background:#0008;justify-content:center;align-items:center;z-index:99}
+.box{background:white;padding:25px;border-radius:15px;width:90%;max-width:400px}
+.box input,.box textarea{width:100%;padding:11px;margin:8px 0;border:1px solid #ddd;border-radius:8px}
+#adminPanel{display:none;background:#fef3c7;color:#111;padding:20px;margin:15px;border-radius:15px}
+footer{text-align:center;padding:20px;color:#888}
+#cartBtn{position:fixed;bottom:20px;right:20px;background:#16a34a;padding:15px 20px;border-radius:50px;z-index:50}
+</style>
+</head>
