@@ -1,35 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SwiftSphere - Online Store</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
-body{background:#f8fafc;color:#111;transition:.3s}
-body.dark{background:#0f172a;color:white}
-body.dark .card{background:#1e293b;color:white;border-color:#334155}
-body.dark .box{background:#1e293b;color:white}
-body.dark .search input{background:#1e293b;color:white;border-color:#334155}
-header{background:#0f172a;color:white;padding:15px 15px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10;flex-wrap:wrap;gap:8px}
-header b{font-size:21px} header b span{color:#38bdf8}
-button{background:#2563eb;color:white;border:0;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:bold}
-.hero{background:linear-gradient(135deg,#2563eb,#0ea5e9);color:white;text-align:center;padding:45px 20px}
-.hero h1{font-size:32px} .hero p{margin:12px 0;opacity:.9}
-.search{padding:18px;text-align:center;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.search input{padding:12px;width:70%;max-width:350px;border:1px solid #ddd;border-radius:20px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;padding:0 15px 30px}
-.card{border:1px solid #eee;border-radius:15px;overflow:hidden;background:white;box-shadow:0 2px 10px #0001;position:relative}
-.card img{width:100%;height:150px;object-fit:cover;background:#eee}
-.card div{padding:12px} .price{color:#2563eb;font-weight:bold;font-size:18px;margin:6px 0}
-.card button{width:100%;margin-top:8px}
-.favBtn{position:absolute;top:10px;right:10px;background:white!important;color:#111!important;width:38px!important;height:38px;border-radius:50%!important;padding:0!important;font-size:20px;box-shadow:0 2px 8px #0003}
-.favBtn.active{background:#fee2e2!important;color:red!important}
-.modal{display:none;position:fixed;inset:0;background:#0008;justify-content:center;align-items:center;z-index:99}
-.box{background:white;padding:25px;border-radius:15px;width:90%;max-width:400px}
-.box input,.box textarea{width:100%;padding:11px;margin:8px 0;border:1px solid #ddd;border-radius:8px}
-#adminPanel{display:none;background:#fef3c7;color:#111;padding:20px;margin:15px;border-radius:15px}
-footer{text-align:center;padding:20px;color:#888}
-#cartBtn{position:fixed;bottom:20px;right:20px;background:#16a34a;padding:15px 20px;border-radius:50px;z-index:50}
-</style>
-</head>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>SwiftSphere Store</title><style>*{margin:0;box-sizing:border-box;font-family:Arial}body{background:#f8fafc}body.dark{background:#0f172a;color:#fff}header{background:#0f172a;color:#fff;padding:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}button{background:#2563eb;color:#fff;border:0;padding:10px 12px;border-radius:8px;font-weight:bold}.hero{background:#2563eb;color:#fff;text-align:center;padding:40px 15px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:15px}.card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px #0002;position:relative}body.dark .card{background:#1e293b}.card img{width:100%;height:140px;object-fit:cover}.card div{padding:10px}.price{color:#2563eb;font-weight:bold;margin:5px 0}.fav{position:absolute;top:8px;right:8px;background:#fff!important;color:#000!important;width:36px;height:36px;border-radius:50%!important;padding:0!important}#admin{display:none;background:#fef3c7;color:#000;padding:15px;margin:15px;border-radius:12px}#admin input{width:100%;padding:10px;margin:6px 0;border:1px solid #ddd;border-radius:8px}.modal{display:none;position:fixed;inset:0;background:#0008;justify-content:center;align-items:center}.box{background:#fff;padding:20px;border-radius:12px;width:90%;max-width:350px}.box input{width:100%;padding:10px;margin:8px 0}</style></head><body>
+<header><b>SwiftSphere</b><div><button onclick="dark()">🌙 Dark</button><button onclick="showFav()">❤️ Fav (<span id="fc">0</span>)</button><button onclick="showLogin()">Admin</button></div></header>
+<div class="hero"><h1>Welcome to SwiftSphere</h1><p>Fast, Simple & Modern Store</p></div>
+<div style="padding:15px;text-align:center"><input id="s" oninput="render()" placeholder="🔍 Search..." style="padding:11px;width:70%;border-radius:20px;border:1px solid #ddd"> <button onclick="showAll()">All</button></div>
+<div id="admin"><h3>Admin PANDA 🐼</h3><input id="n" placeholder="Product Name"><input id="pr" type="number" placeholder="Price"><input id="im" placeholder="Image Link"><button onclick="addP()" style="width:100%">+ Upload Product</button></div><div id="title" style="padding:0 15px;font-weight:bold">🛍️ All Products</div><div id="shop" class="grid"></div>
+<div style="text-align:center;padding:20px"><button onclick="checkout()" style="background:#16a34a">🛒 Checkout WhatsApp</button></div>
+<div id="lm" class="modal"><div class="box"><h3>Admin Login</h3><p>Password: panda</p><input id="pw" type="password" placeholder="Password"><button onclick="login()" style="width:100%">Login</button><p onclick="closeL()" style="text-align:center;color:#888;margin-top:10px">Close</p></div></div>
+<script>
+let P=JSON.parse(localStorage.getItem('sp')||'[]'),F=JSON.parse(localStorage.getItem('sf')||'[]'),onlyFav=false,cart=[];
+if(!P.length){P=[{n:"Sneakers",p:25000,i:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500"},{n:"Smart Watch",p:45000,i:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500"},{n:"Headphones",p:18000,i:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"},{n:"Backpack",p:15000,i:"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500"}];save()}
+function save(){localStorage.setItem('sp',JSON.stringify(P));localStorage.setItem('sf',JSON.stringify(F));document.getElementById('fc').innerText=F.length}
+function dark(){document.body.classList.toggle('dark')}function render(){let q=document.getElementById('s').value.toLowerCase();let L=P.filter(x=>x.n.toLowerCase().includes(q));if(onlyFav)L=L.filter(x=>F.includes(x.n));document.getElementById('shop').innerHTML=L.map((x,i)=>{let ri=P.indexOf(x),f=F.includes(x.n);return `<div class="card"><button class="fav" onclick="fav('${x.n}')">${f?'❤️':'🤍'}</button><img src="${x.i}"><div><b>${x.n}</b><div class="price">₦${Number(x.p).toLocaleString()}</div><button onclick="addC(${ri})" style="width:100%">Add to Cart</button></div></div>`}).join('')||'<p style="padding:20px">No product. Tap 🤍 to favorite.</p>'}
+function fav(n){F.includes(n)?F=F.filter(x=>x!==n):F.push(n);save();render()}
+function showFav(){onlyFav=true;document.getElementById('title').innerText='❤️ My Favorites';render()}
+function showAll(){onlyFav=false;document.getElementById('title').innerText='🛍️ All Products';render()}
+function addC(i){cart.push(P[i]);alert(P[i].n+' added!')}
+function checkout(){if(!cart.length)return alert('Cart empty');let t=cart.reduce((s,c)=>s+Number(c.p),0);window.open('https://wa.me/2348000000000?text='+encodeURIComponent('Hello SwiftSphere, I want:\n'+cart.map(c=>c.n+' - ₦'+c.p).join('\n')+'\nTotal: ₦'+t))}
+function showLogin(){document.getElementById('lm').style.display='flex'}function closeL(){document.getElementById('lm').style.display='none'}
+function login(){if(document.getElementById('pw').value.toLowerCase()=='panda'){document.getElementById('admin').style.display='block';closeL();alert('Welcome PANDA 🐼')}else alert('Wrong password')}
+function addP(){let n=document.getElementById('n').value,pr=document.getElementById('pr').value,im=document.getElementById('im').value;if(!n||!pr)return alert('Put name & price');P.unshift({n:n,p:pr,i:im||'https://via.placeholder.com/400'});save();render();alert('Uploaded!')}
+save();render();
+</script></body></html>
