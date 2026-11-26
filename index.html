@@ -1,13 +1,14 @@
-<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>SwiftSphere - Everything You Need, Delivered Swiftly</title><style>
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>SwiftSphere - Everything You Need, Delivered Swiftly</title><link rel="icon" href="https://i.imgur.com/8Qm8X4k.png"><style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial;background:#111;color:#fff}
 header{background:#000;color:#D4AF37;padding:14px 15px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10;border-bottom:2px solid #D4AF37}
 header b{font-size:22px;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:none}
 header small{display:block;font-size:10px;color:#fff;font-weight:normal}
+.logoimg{width:45px;height:45px;border-radius:50%;border:2px solid #D4AF37;object-fit:cover;background:#D4AF37}
 button{background:#D4AF37;color:#000;border:none;padding:9px 12px;border-radius:20px;font-weight:bold;cursor:pointer}
 button.ghost{background:#222;color:#D4AF37;border:1px solid #D4AF37}
 input,select{padding:10px;border-radius:10px;border:1px solid #D4AF37;width:100%;background:#222;color:#fff;margin:4px 0}
 .card{background:#1c1c1c;border:1px solid #333;border-radius:14px;padding:10px;width:48%}
-.card img{width:100%;height:130px;object-fit:cover;border-radius:10px}
+.card img{width:100%;height:130px;object-fit:cover;border-radius:10px;background:#333}
 .price{color:#D4AF37;font-weight:bold}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:99;padding:15px}
 .box{background:#1c1c1c;border:1px solid #D4AF37;padding:18px;border-radius:14px;width:100%;max-width:400px;max-height:90vh;overflow:auto}
@@ -15,7 +16,7 @@ input,select{padding:10px;border-radius:10px;border:1px solid #D4AF37;width:100%
 .banner{background:linear-gradient(90deg,#000,#3a2c00);border:1px solid #D4AF37;margin:12px;border-radius:14px;padding:18px;text-align:center}
 .banner h2{color:#D4AF37;margin:0}
 </style></head><body>
-<header><div id="logo"><b>SWIFTSPHERE</b><small>Everything You Need, Delivered Swiftly</small></div><div><button onclick="dark()">🌙</button> <button onclick="showFav()">❤️ <span id="fc">0</span></button></div></header>
+<header><div id="logo" style="display:flex;align-items:center;gap:8px"><img class="logoimg" src="https://i.imgur.com/8Qm8X4k.png" onerror="this.src='https://via.placeholder.com/100x100/D4AF37/000000?text=S'"><div><b>SWIFTSPHERE</b><small>Everything You Need, Delivered Swiftly</small></div></div><div><button onclick="dark()">🌙</button> <button onclick="showFav()">❤️ <span id="fc">0</span></button></div></header>
 
 <div class="banner"><h2>SHOP FAST, DELIVERED WORLDWIDE</h2><p>Black + Gold Premium Store</p><input id="q" oninput="render()" placeholder="🔍 Search products..."></div>
 
@@ -42,18 +43,18 @@ input,select{padding:10px;border-radius:10px;border:1px solid #D4AF37;width:100%
 <button onclick="addP()">+ Add Product</button><button class="ghost" onclick="hide('adminM')">Close</button><div id="alist"></div></div></div>
 
 <script>
-let P=JSON.parse(localStorage.getItem('sp')||'[]');
-if(!P.length){P=[
-{n:"Sneakers",p:25000,c:"Clothes & Shoes",img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400"},
-{n:"Smart Watch",p:45000,c:"Tech",img:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400"},
-{n:"Headphones",p:30000,c:"Tech",img:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400"},
-{n:"Backpack",p:18000,c:"Clothes & Shoes",img:"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400"},
-{n:"Standing Fan",p:55000,c:"Home & Kitchen",img:"https://images.unsplash.com/photo-1565151443833-29bfb3d5dd8e?w=400"},
-{n:"Perfume",p:35000,c:"Beauty",img:"https://images.unsplash.com/photo-1541643600914-78b084683601?w=400"},
-{n:"Toyota Camry 2019",p:8500000,c:"Cars",img:"https://images.unsplash.com/photo-1550355291-bbee04a92027?w=400"}
+let P=JSON.parse(localStorage.getItem('sp2')||'[]');
+if(!P.length || !P[0].img || !P[0].c){P=[
+{n:"Sneakers",p:25000,c:"Clothes & Shoes",img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&auto=format&fit=crop"},
+{n:"Smart Watch",p:45000,c:"Tech",img:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop"},
+{n:"Headphones",p:30000,c:"Tech",img:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop"},
+{n:"Backpack",p:18000,c:"Clothes & Shoes",img:"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&auto=format&fit=crop"},
+{n:"Standing Fan",p:55000,c:"Home & Kitchen",img:"https://images.unsplash.com/photo-1565151443833-29bfb3d5dd8e?w=400&auto=format&fit=crop"},
+{n:"Perfume",p:35000,c:"Beauty",img:"https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&auto=format&fit=crop"},
+{n:"Toyota Camry 2019",p:8500000,c:"Cars",img:"https://images.unsplash.com/photo-1550355291-bbee04a92027?w=400&auto=format&fit=crop"}
 ];save()}
 let F=JSON.parse(localStorage.getItem('sf')||'[]'),onlyFav=false,cart=[],cat='All';
-function save(){localStorage.setItem('sp',JSON.stringify(P));localStorage.setItem('sf',JSON.stringify(F))}
+function save(){localStorage.setItem('sp2',JSON.stringify(P));localStorage.setItem('sf',JSON.stringify(F))}
 function dark(){document.body.style.background=document.body.style.background=='white'?'#111':'white';document.body.style.color=document.body.style.color=='black'?'#fff':'black'}
 function setCat(c){cat=c;onlyFav=false;document.getElementById('title').innerText='🛍️ '+c;render()}
 function showFav(){onlyFav=true;document.getElementById('title').innerText='❤️ Favorites';render()}
@@ -67,7 +68,7 @@ logo.addEventListener('pointerup',endPress);logo.addEventListener('pointerleave'
 function show(id){document.getElementById(id).style.display='flex'}
 function hide(id){document.getElementById(id).style.display='none'}
 function login(){if(document.getElementById('pw').value=='panda'){hide('loginM');show('adminM');listA()}else alert('Wrong Password')}
-function addP(){let n=document.getElementById('n').value,p=+document.getElementById('p').value,c=document.getElementById('c').value,img=document.getElementById('img').value||'https://via.placeholder.com/400';if(!n||!p)return alert('Fill name + price');P.unshift({n,p,c,img});save();render();listA();alert('Added to '+c)}
+function addP(){let n=document.getElementById('n').value,p=+document.getElementById('p').value,c=document.getElementById('c').value,img=document.getElementById('img').value||'https://picsum.photos/400/300?random='+Date.now();if(!n||!p)return alert('Fill name + price');P.unshift({n,p,c,img});save();render();listA();alert('Added to '+c)}
 function delP(i){P.splice(i,1);save();render();listA()}
 function listA(){document.getElementById('alist').innerHTML=P.map((x,i)=>`<p>${x.n} - ${x.c} - ₦${x.p} <button onclick="delP(${i})">Delete</button></p>`).join('')}
 function render(){
@@ -81,7 +82,7 @@ document.getElementById('fc').innerText=F.length;document.getElementById('cc').i
 document.getElementById('grid').innerHTML=L.map((x)=>{
  let i=P.indexOf(x);
  let btn=x.c=='Cars'?`<button onclick="window.open('https://wa.me/2348103728199?text='+encodeURIComponent('Hello SwiftSphere, I want to Request This Car: ${x.n} - ₦${x.p}'))">🚗 Request This Car</button>`:`<button onclick="cart.push(P[${i}]);render()">Add to Cart</button>`;
- return `<div class="card"><img src="${x.img}"><b>${x.n}</b><br><small>${x.c}</small><br><span class="price">₦${x.p.toLocaleString()}</span><br><button class="ghost" onclick="fav(${i})">${F.includes(x.n)?'❤️':'🤍'}</button> ${btn}</div>`
+ return `<div class="card"><img src="${x.img}" onerror="this.src='https://picsum.photos/400/300?random=${i}'"><b>${x.n}</b><br><small>${x.c||''}</small><br><span class="price">₦${x.p.toLocaleString()}</span><br><button class="ghost" onclick="fav(${i})">${F.includes(x.n)?'❤️':'🤍'}</button> ${btn}</div>`
 }).join('')||'<p>No product in this category yet.</p>';
 }
 render();
