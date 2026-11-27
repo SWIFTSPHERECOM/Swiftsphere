@@ -17,6 +17,17 @@ input,select{padding:10px;border-radius:10px;border:1px solid #D4AF37;width:100%
 .banner h2{color:#D4AF37;margin:0}
 .checkout-bar{position:fixed;bottom:0;left:0;right:0;background:#000;border-top:2px solid #D4AF37;padding:12px;text-align:center;z-index:20}
 .checkout-bar button{width:95%;max-width:400px;padding:14px;font-size:16px;background:#FFD700;color:#000;border:2px solid #fff;box-shadow:0 0 15px #D4AF37}
+.star-btn{background:#222;color:#FFD700;border:1px solid #D4AF37;padding:6px 10px;margin:5px 0}
+.sold{color:#ff9d00;font-size:12px;font-weight:bold}
+.delivery{color:#4CAF50;font-size:12px;font-weight:bold}
+.review-box{background:#222;border:1px solid #333;border-radius:10px;padding:8px;margin-top:8px}
+.review-box input{padding:8px}
+.review-item{border-top:1px solid #333;padding:6px 0;font-size:13px}
+.review-item b{color:#D4AF37}
+.stock{font-size:12px;font-weight:bold;padding:4px 8px;border-radius:20px;display:inline-block;margin:4px 0}
+.stock-in{background:#0a3d1a;color:#4CAF50;border:1px solid #4CAF50}
+.stock-new{background:#3a2c00;color:#FFD700;border:1px solid #FFD700}
+.stock-pre{background:#3a1a00;color:#ff9d00;border:1px solid #ff9d00}
 </style></head><body>
 <header><div id="logo" style="display:flex;align-items:center;gap:8px"><div class="logoimg">S</div><div><b>SWIFTSPHERE</b><small>Everything You Need, Delivered Swiftly</small></div></div><div><button onclick="dark()">🌙</button> <button onclick="showFav()">❤️ <span id="fc">0</span></button></div></header>
 
@@ -42,19 +53,22 @@ input,select{padding:10px;border-radius:10px;border:1px solid #D4AF37;width:100%
 <input id="n" placeholder="Product Name"><input id="p" type="number" placeholder="Price ₦"><input id="img" placeholder="Image Link (or leave empty)">
  <input type="file" id="f" accept="image/*,video/*">
 <select id="c"><option>Tech</option><option>Beauty</option><option>Clothes & Shoes</option><option>Baby Stuff & Toys</option><option>Home & Kitchen</option><option>Cars</option></select>
+<label style="font-size:12px;color:#D4AF37">Stock Status:</label>
+<select id="st"><option value="In Stock">✅ In Stock - I get am now</option><option value="New Arrival">🆕 New Arrival - Just Arrive</option><option value="Pre-Order">📦 Pre-Order - I no get am yet, order first</option></select>
 <button onclick="addP()">+ Add Product</button><button class="ghost" onclick="hide('adminM')">Close</button><div id="alist"></div></div></div>
 
 <script>
 let P=JSON.parse(localStorage.getItem('sp4')||'[]');
 if(!P.length || !P[0].img || !P[0].c){P=[
-{n:"Sneakers",p:25000,c:"Clothes & Shoes",img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&auto=format&fit=crop"},
-{n:"Smart Watch",p:45000,c:"Tech",img:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop"},
-{n:"Headphones",p:30000,c:"Tech",img:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop"},
-{n:"Backpack",p:18000,c:"Clothes & Shoes",img:"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&auto=format&fit=crop"},
-{n:"Standing Fan",p:55000,c:"Home & Kitchen",img:"https://picsum.photos/seed/fan/400/300"},
-{n:"Perfume",p:35000,c:"Beauty",img:"https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&auto=format&fit=crop"},
-{n:"Toyota Camry 2019",p:8500000,c:"Cars",img:"https://images.unsplash.com/photo-1550355291-bbee04a92027?w=400&auto=format&fit=crop"}
+{n:"Sneakers",p:25000,c:"Clothes & Shoes",img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&auto=format&fit=crop",stars:12,sold:25,reviews:[{name:"Ada",text:"I got this product, e very nice!"}],st:"In Stock"},
+{n:"Smart Watch",p:45000,c:"Tech",img:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop",stars:8,sold:18,reviews:[],st:"In Stock"},
+{n:"Headphones",p:30000,c:"Tech",img:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop",stars:15,sold:30,reviews:[],st:"In Stock"},
+{n:"Backpack",p:18000,c:"Clothes & Shoes",img:"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&auto=format&fit=crop",stars:5,sold:10,reviews:[],st:"In Stock"},
+{n:"Standing Fan",p:55000,c:"Home & Kitchen",img:"https://picsum.photos/seed/fan/400/300",stars:7,sold:14,reviews:[],st:"In Stock"},
+{n:"Perfume",p:35000,c:"Beauty",img:"https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&auto=format&fit=crop",stars:20,sold:42,reviews:[],st:"In Stock"},
+{n:"Toyota Camry 2019",p:8500000,c:"Cars",img:"https://images.unsplash.com/photo-1550355291-bbee04a92027?w=400&auto=format&fit=crop",stars:3,sold:2,reviews:[],st:"In Stock"}
 ];save()}
+P.forEach(x=>{if(x.stars==null)x.stars=0;if(x.sold==null)x.sold=0;if(!x.reviews)x.reviews=[];if(!x.st)x.st="In Stock"});
 let F=JSON.parse(localStorage.getItem('sf')||'[]'),onlyFav=false,cart=[],cat='All';
 function save(){localStorage.setItem('sp4',JSON.stringify(P));localStorage.setItem('sf',JSON.stringify(F))}
 function dark(){document.body.style.background=document.body.style.background=='white'?'#111':'white';document.body.style.color=document.body.style.color=='black'?'#fff':'black'}
@@ -68,9 +82,13 @@ catTap.addEventListener('click',()=>{taps++;clearTimeout(tapTimer);tapTimer=setT
 function show(id){document.getElementById(id).style.display='flex'}
 function hide(id){document.getElementById(id).style.display='none'}
 function login(){if(document.getElementById('pw').value=='panda'){hide('loginM');show('adminM');listA()}else alert('Wrong Password')}
-function addP(){let n=document.getElementById('n').value,p=+document.getElementById('p').value,c=document.getElementById('c').value,f=document.getElementById('f').files[0],img=document.getElementById('img')?document.getElementById('img').value:'';if(!n||!p)return alert('Fill name + price');let doAdd=(im)=>{P.unshift({n,p,c,img:im||'https://picsum.photos/400/300?random='+Date.now()});save();render();listA();alert('Added to '+c)};if(f){let r=new FileReader();r.onload=e=>doAdd(e.target.result);r.readAsDataURL(f);}else{doAdd(img);}}
+function addP(){let n=document.getElementById('n').value,p=+document.getElementById('p').value,c=document.getElementById('c').value,st=document.getElementById('st').value,f=document.getElementById('f').files[0],img=document.getElementById('img')?document.getElementById('img').value:'';if(!n||!p)return alert('Fill name + price');let doAdd=(im)=>{P.unshift({n,p,c,st,img:im||'https://picsum.photos/400/300?random='+Date.now(),stars:0,sold:0,reviews:[]});save();render();listA();alert('Added to '+c+' as '+st)};if(f){let r=new FileReader();r.onload=e=>doAdd(e.target.result);r.readAsDataURL(f);}else{doAdd(img);}}
 function delP(i){P.splice(i,1);save();render();listA()}
-function listA(){document.getElementById('alist').innerHTML=P.map((x,i)=>`<p>${x.n} - ${x.c} - ₦${x.p} <button onclick="delP(${i})">Delete</button></p>`).join('')}
+function listA(){document.getElementById('alist').innerHTML=P.map((x,i)=>`<p>${x.n} - ${x.c} - ₦${x.p} - ${x.st||'In Stock'} <button onclick="delP(${i})">Delete</button></p>`).join('')}
+function rateStar(i){P[i].stars=(P[i].stars||0)+1;save();render();}
+function addReview(i){let name=document.getElementById('rname-'+i).value.trim();let text=document.getElementById('rtext-'+i).value.trim();if(!name||!text)return alert('Write your name and comment');P[i].reviews.push({name:name,text:text});save();render();}
+function addToCart(i){cart.push(P[i]);P[i].sold=(P[i].sold||0)+1;save();render();}
+function stockBadge(st){if(st=='Pre-Order')return `<span class="stock stock-pre">📦 Pre-Order - Order First, We Go Bring Am</span>`;if(st=='New Arrival')return `<span class="stock stock-new">🆕 New Arrival</span>`;return `<span class="stock stock-in">✅ In Stock</span>`;}
 function render(){
 let q=(document.getElementById('q').value||'').toLowerCase();
 let L=P.filter(x=>{
@@ -81,8 +99,14 @@ let L=P.filter(x=>{
 document.getElementById('fc').innerText=F.length;document.getElementById('cc').innerText=cart.length;
 document.getElementById('grid').innerHTML=L.map((x)=>{
  let i=P.indexOf(x);
- let btn=x.c=='Cars'?`<button onclick="window.open('https://wa.me/2348103728199?text='+encodeURIComponent('Hello SwiftSphere, I want to Request This Car: ${x.n} - ₦${x.p}'))">🚗 Request This Car</button>`:`<button onclick="cart.push(P[${i}]);render()">Add to Cart</button>`;
- return `<div class="card">${x.img.includes('data:video')||x.img.includes('.mp4')?`<video src="${x.img}" controls muted playsinline></video>`:`<img src="${x.img}">`}<div class="p"><b>${x.n}</b><br><small>${x.c}</small><br><b>₦${x.p}</b><br>${btn}</div></div>`;
+ let btn;
+ if(x.c=='Cars'){btn=`<button onclick="window.open('https://wa.me/2348103728199?text='+encodeURIComponent('Hello SwiftSphere, I want to Request This Car: ${x.n} - ₦${x.p}'))">🚗 Request This Car</button>`;}
+ else if(x.st=='Pre-Order'){btn=`<button style="background:#ff9d00" onclick="window.open('https://wa.me/2348103728199?text='+encodeURIComponent('Hello SwiftSphere, I want to Pre-Order: ${x.n} - ₦${x.p}'))">📦 Pre-Order on WhatsApp</button>`;}
+ else if(x.st=='New Arrival'){btn=`<button style="background:#FFD700" onclick="window.open('https://wa.me/2348103728199?text='+encodeURIComponent('Hello SwiftSphere, I want to RESERVE this New Arrival: ${x.n} - ₦${x.p}'))">🔔 Reserve Now</button>`;}
+ else{btn=`<button onclick="addToCart(${i})">Add to Cart</button>`;}
+ let reviewsHtml=(x.reviews||[]).map(r=>`<div class="review-item"><b>${r.name}:</b> ${r.text}</div>`).join('') || '<div style="font-size:12px;color:#888">No reviews yet. Be the first!</div>';
+ let deliveryText = x.st=='Pre-Order' ? '📦 Pre-Order - Arrives in 2-3 Days' : x.st=='New Arrival' ? '🆕 New Arrival - Reserve Before E Finish' : '⚡ Fast Delivery Nationwide';
+ return `<div class="card">${x.img.includes('data:video')||x.img.includes('.mp4')?`<video src="${x.img}" controls muted playsinline></video>`:`<img src="${x.img}">`}<div class="p"><b>${x.n}</b><br><small>${x.c}</small><br><b>₦${x.p}</b><br>${stockBadge(x.st)}<br><span class="delivery">${deliveryText}</span><br><span class="sold">🔥 ${x.sold||0} people don buy this</span><br><button class="star-btn" onclick="rateStar(${i})">⭐ ${x.stars||0} - Tap to Rate</button><br>${btn}<div class="review-box"><b style="color:#D4AF37">💬 Customer Reviews</b><input id="rname-${i}" placeholder="Write your name"><input id="rtext-${i}" placeholder="Write your comment - e.g I got this product..."><button onclick="addReview(${i})">Post Comment</button><div>${reviewsHtml}</div></div></div></div>`;
 }).join('')||'<p>No product in this category yet.</p>';
 }
 render();
