@@ -82,7 +82,7 @@ document.getElementById('fc').innerText=F.length;document.getElementById('cc').i
 document.getElementById('grid').innerHTML=L.map((x)=>{
  let i=P.indexOf(x);
  let btn=x.c=='Cars'?`<button onclick="window.open('https://wa.me/2348103728199?text='+encodeURIComponent('Hello SwiftSphere, I want to Request This Car: ${x.n} - ₦${x.p}'))">🚗 Request This Car</button>`:`<button onclick="cart.push(P[${i}]);render()">Add to Cart</button>`;
- return `<div class="card"><img src="${x.img}" onerror="this.src='https://picsum.photos/400/300?random=${i}'"><b>${x.n}</b><br><small>${x.c||''}</small><br><span class="price">₦${x.p.toLocaleString()}</span><br><button class="ghost" onclick="fav(${i})">${F.includes(x.n)?'❤️':'🤍'}</button> ${btn}</div>`
+ return `<div class="card">${x.img.includes('data:video')||x.img.includes('.mp4')?`<video src="${x.img}" controls muted playsinline></video>`:`<img src="${x.img}">`}<div class="p"><b>${x.n}</b><br><small>${x.c}</small><br><b>₦${x.p}</b><br>${btn}</div></div>`;
 }).join('')||'<p>No product in this category yet.</p>';
 }
 render();
