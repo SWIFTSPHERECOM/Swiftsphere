@@ -28,10 +28,23 @@ input,select{padding:10px;border-radius:10px;border:1px solid #D4AF37;width:100%
 .stock-in{background:#0a3d1a;color:#4CAF50;border:1px solid #4CAF50}
 .stock-new{background:#3a2c00;color:#FFD700;border:1px solid #FFD700}
 .stock-pre{background:#3a1a00;color:#ff9d00;border:1px solid #ff9d00}
+.flashbar{background:#ff0000;color:#fff;margin:12px;border-radius:14px;padding:14px;text-align:center;border:2px solid #fff}
+.flashbar b{font-size:18px}
+#flashTimer{font-size:26px;background:#fff;color:#ff0000;padding:4px 12px;border-radius:8px;display:inline-block;margin-top:6px;font-weight:bold}
+.pod{font-size:12px;font-weight:bold;background:#0a3d1a;color:#4CAF50;border:1px solid #4CAF50;padding:5px 8px;border-radius:20px;display:inline-block;margin:4px 0}
+.about{background:#1c1c1c;border:1px solid #D4AF37;margin:12px;border-radius:14px;padding:16px;text-align:center}
+.about h3{color:#D4AF37;margin:0 0 6px}
+.about p{font-size:13px;color:#ccc;line-height:1.6;margin:4px 0}
 </style></head><body>
 <header><div id="logo" style="display:flex;align-items:center;gap:8px"><div class="logoimg">S</div><div><b>SWIFTSPHERE</b><small>Everything You Need, Delivered Swiftly</small></div></div><div><button onclick="dark()">🌙</button> <button onclick="showFav()">❤️ <span id="fc">0</span></button></div></header>
 
 <div class="banner"><h2>SHOP FAST, DELIVERED WORLDWIDE</h2><p>Black + Gold Premium Store</p><input id="q" oninput="render()" placeholder="🔍 Search products..."></div>
+
+<!-- NEW: FLASH SALE - ONLY THIS IS NEW FOR CUSTOMER -->
+<div class="flashbar" id="flashBar"><b>🔥 BLACK FRIDAY FLASH SALE 🔥</b><br><span style="font-size:13px">Sale Go End In:</span><br><span id="flashTimer">12 : 00 : 00</span><br><span style="font-size:12px">Hurry! Price Go Go Back Up After Timer Finish</span><br><span class="pod" style="margin-top:6px">💵 PAY ON DELIVERY - Pay When E Reach You</span></div>
+
+<!-- NEW: ABOUT - ONLY THIS IS NEW -->
+<div class="about"><h3>⭐ About SwiftSphere</h3><p><b>SwiftSphere</b> na your trusted online store for quality gadgets, fashion, beauty, home & cars for good price. We dey Port Harcourt, we dey deliver <b>fast to everywhere for Nigeria.</b></p><p><b>💵 Pay on Delivery:</b> You no go pay anything now. Pay only when your order reach you!</p><p>🚀 Fast Delivery &nbsp;|&nbsp; ✅ Trusted Seller &nbsp;|&nbsp; 💬 WhatsApp: 0810 372 8199</p></div>
 
 <div style="padding:0 12px"><b id="catTap">Categories:</b><br>
 <button class="catbtn" onclick="setCat('All')">All</button>
@@ -45,11 +58,13 @@ input,select{padding:10px;border-radius:10px;border:1px solid #D4AF37;width:100%
 
 <div id="title" style="padding:12px;font-weight:bold;color:#D4AF37">🛍️ All Products</div>
 <div id="grid" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:0 10px"></div>
-<div class="checkout-bar"><button onclick="checkout()">🛒 Checkout via WhatsApp (<span id="cc">0</span>)</button></div>
+<div class="checkout-bar"><button onclick="checkout()">🛒 Checkout via WhatsApp (<span id="cc">0</span>) - 💵 Pay on Delivery</button></div>
 
 <div class="modal" id="loginM"><div class="box"><h3 style="color:#D4AF37">Admin Login</h3><input id="pw" type="password" placeholder="Enter Password"><button onclick="login()">Login</button> <button class="ghost" onclick="hide('loginM')">Close</button></div></div>
 
 <div class="modal" id="adminM"><div class="box"><h3 style="color:#D4AF37">Admin Dashboard</h3>
+<!-- NEW: FLASH SALE CONTROL - INSIDE SAME ADMIN, NO NEW ADMIN -->
+<div style="border:1px solid #ff0000;border-radius:10px;padding:10px;margin-bottom:10px"><b style="color:#ff4444">🔥 BLACK FRIDAY CONTROL - ADMIN ONLY</b><br><label style="font-size:12px;color:#D4AF37">How long sale go last?</label><select id="saleHours"><option value="0.5">30 Minutes</option><option value="1">1 Hour</option><option value="3">3 Hours</option><option value="12" selected>12 Hours</option><option value="24">24 Hours - Full Day</option></select><button onclick="startSale()" style="background:#ff0000;color:#fff">▶️ START Flash Sale</button> <button class="ghost" onclick="stopSale()">⏹️ STOP Flash Sale</button></div>
 <input id="n" placeholder="Product Name"><input id="p" type="number" placeholder="Price ₦"><input id="img" placeholder="Image Link (or leave empty)">
  <input type="file" id="f" accept="image/*,video/*">
 <select id="c"><option>Tech</option><option>Beauty</option><option>Clothes & Shoes</option><option>Baby Stuff & Toys</option><option>Home & Kitchen</option><option>Cars</option></select>
@@ -70,12 +85,18 @@ if(!P.length || !P[0].img || !P[0].c){P=[
 ];save()}
 P.forEach(x=>{if(x.stars==null)x.stars=0;if(x.sold==null)x.sold=0;if(!x.reviews)x.reviews=[];if(!x.st)x.st="In Stock"});
 let F=JSON.parse(localStorage.getItem('sf')||'[]'),onlyFav=false,cart=[],cat='All';
+// NEW: FLASH SALE LOGIC - ADMIN ONLY CONTROL
+let saleOn=true;let flashEnd=Date.now()+12*60*60*1000;let flashInt=null;
+function tickFlash(){if(!saleOn){document.getElementById('flashTimer').innerText='NO SALE NOW';return;}let d=flashEnd-Date.now();if(d<=0){document.getElementById('flashTimer').innerText='SALE DON END';return;}let h=Math.floor(d/3600000),m=Math.floor((d%3600000)/60000),s=Math.floor((d%60000)/1000);document.getElementById('flashTimer').innerText=String(h).padStart(2,'0')+' : '+String(m).padStart(2,'0')+' : '+String(s).padStart(2,'0');}
+function startSale(){let hrs=parseFloat(document.getElementById('saleHours').value);flashEnd=Date.now()+hrs*60*60*1000;saleOn=true;document.getElementById('flashBar').style.display='block';tickFlash();alert('Flash Sale don START for '+hrs+' hours!');}
+function stopSale(){saleOn=false;document.getElementById('flashBar').style.display='none';alert('Flash Sale don STOP.');}
+clearInterval(flashInt);flashInt=setInterval(tickFlash,1000);tickFlash();
 function save(){localStorage.setItem('sp4',JSON.stringify(P));localStorage.setItem('sf',JSON.stringify(F))}
 function dark(){document.body.style.background=document.body.style.background=='white'?'#111':'white';document.body.style.color=document.body.style.color=='black'?'#fff':'black'}
 function setCat(c){cat=c;onlyFav=false;document.getElementById('title').innerText='🛍️ '+c;render()}
 function showFav(){onlyFav=true;document.getElementById('title').innerText='❤️ Favorites';render()}
 function fav(i){let id=P[i].n;F.includes(id)?F=F.filter(x=>x!=id):F.push(id);save();render()}
-function checkout(){if(!cart.length)return alert('Cart empty');let t='Hello SwiftSphere, I want to order:\n';cart.forEach(x=>t+=x.n+' - ₦'+x.p+'\n');window.open('https://wa.me/2348103728199?text='+encodeURIComponent(t))}
+function checkout(){if(!cart.length)return alert('Cart empty');let t='Hello SwiftSphere, I want to order (PAY ON DELIVERY):\n';cart.forEach(x=>t+=x.n+' - ₦'+x.p+'\n');t+='\nI will pay when my order arrives.';window.open('https://wa.me/2348103728199?text='+encodeURIComponent(t))}
  let taps=0,tapTimer=null;
 let catTap=document.getElementById('catTap');
 catTap.addEventListener('click',()=>{taps++;clearTimeout(tapTimer);tapTimer=setTimeout(()=>{taps=0},2000);if(taps>=3){taps=0;show('loginM')}});
@@ -100,13 +121,13 @@ document.getElementById('fc').innerText=F.length;document.getElementById('cc').i
 document.getElementById('grid').innerHTML=L.map((x)=>{
  let i=P.indexOf(x);
  let btn;
- if(x.c=='Cars'){btn=`<button onclick="window.open('https://wa.me/2348103728199?text='+encodeURIComponent('Hello SwiftSphere, I want to Request This Car: ${x.n} - ₦${x.p}'))">🚗 Request This Car</button>`;}
- else if(x.st=='Pre-Order'){btn=`<button style="background:#ff9d00" onclick="window.open('https://wa.me/2348103728199?text='+encodeURIComponent('Hello SwiftSphere, I want to Pre-Order: ${x.n} - ₦${x.p}'))">📦 Pre-Order on WhatsApp</button>`;}
- else if(x.st=='New Arrival'){btn=`<button style="background:#FFD700" onclick="window.open('https://wa.me/2348103728199?text='+encodeURIComponent('Hello SwiftSphere, I want to RESERVE this New Arrival: ${x.n} - ₦${x.p}'))">🔔 Reserve Now</button>`;}
+ if(x.c=='Cars'){btn=`<button onclick="window.open('https://wa.me/2348103728199?text='+encodeURIComponent('Hello SwiftSphere, I want to Request This Car: ${x.n} - ₦${x.p} - PAY ON DELIVERY'))">🚗 Request This Car</button>`;}
+ else if(x.st=='Pre-Order'){btn=`<button style="background:#ff9d00" onclick="window.open('https://wa.me/2348103728199?text='+encodeURIComponent('Hello SwiftSphere, I want to Pre-Order: ${x.n} - ₦${x.p} - PAY ON DELIVERY'))">📦 Pre-Order on WhatsApp</button>`;}
+ else if(x.st=='New Arrival'){btn=`<button style="background:#FFD700" onclick="window.open('https://wa.me/2348103728199?text='+encodeURIComponent('Hello SwiftSphere, I want to RESERVE this New Arrival: ${x.n} - ₦${x.p} - PAY ON DELIVERY'))">🔔 Reserve Now</button>`;}
  else{btn=`<button onclick="addToCart(${i})">Add to Cart</button>`;}
  let reviewsHtml=(x.reviews||[]).map(r=>`<div class="review-item"><b>${r.name}:</b> ${r.text}</div>`).join('') || '<div style="font-size:12px;color:#888">No reviews yet. Be the first!</div>';
  let deliveryText = x.st=='Pre-Order' ? '📦 Pre-Order - Arrives in 2-3 Days' : x.st=='New Arrival' ? '🆕 New Arrival - Reserve Before E Finish' : '⚡ Fast Delivery Nationwide';
- return `<div class="card">${x.img.includes('data:video')||x.img.includes('.mp4')?`<video src="${x.img}" controls muted playsinline></video>`:`<img src="${x.img}">`}<div class="p"><b>${x.n}</b><br><small>${x.c}</small><br><b>₦${x.p}</b><br>${stockBadge(x.st)}<br><span class="delivery">${deliveryText}</span><br><span class="sold">🔥 ${x.sold||0} people don buy this</span><br><button class="star-btn" onclick="rateStar(${i})">⭐ ${x.stars||0} - Tap to Rate</button><br>${btn}<div class="review-box"><b style="color:#D4AF37">💬 Customer Reviews</b><input id="rname-${i}" placeholder="Write your name"><input id="rtext-${i}" placeholder="Write your comment - e.g I got this product..."><button onclick="addReview(${i})">Post Comment</button><div>${reviewsHtml}</div></div></div></div>`;
+ return `<div class="card">${x.img.includes('data:video')||x.img.includes('.mp4')?`<video src="${x.img}" controls muted playsinline></video>`:`<img src="${x.img}">`}<div class="p"><b>${x.n}</b><br><small>${x.c}</small><br><b>₦${x.p}</b><br>${stockBadge(x.st)}<br><span class="pod">💵 Pay on Delivery Available</span><br><span class="delivery">${deliveryText}</span><br><span class="sold">🔥 ${x.sold||0} people don buy this</span><br><button class="star-btn" onclick="rateStar(${i})">⭐ ${x.stars||0} - Tap to Rate</button><br>${btn}<div class="review-box"><b style="color:#D4AF37">💬 Customer Reviews</b><input id="rname-${i}" placeholder="Write your name"><input id="rtext-${i}" placeholder="Write your comment - e.g I got this product..."><button onclick="addReview(${i})">Post Comment</button><div>${reviewsHtml}</div></div></div></div>`;
 }).join('')||'<p>No product in this category yet.</p>';
 }
 render();
