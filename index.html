@@ -22,7 +22,7 @@ input,select{padding:10px;border-radius:10px;border:1px solid #D4AF37;width:100%
 
 <div class="banner"><h2>SHOP FAST, DELIVERED WORLDWIDE</h2><p>Black + Gold Premium Store</p><input id="q" oninput="render()" placeholder="🔍 Search products..."></div>
 
-<div style="padding:0 12px"><b>Categories:</b><br>
+<div style="padding:0 12px"><b id="catTap">Categories:</b><br>
 <button class="catbtn" onclick="setCat('All')">All</button>
 <button class="catbtn" onclick="setCat('Tech')">Tech</button>
 <button class="catbtn" onclick="setCat('Beauty')">Beauty</button>
@@ -61,12 +61,9 @@ function setCat(c){cat=c;onlyFav=false;document.getElementById('title').innerTex
 function showFav(){onlyFav=true;document.getElementById('title').innerText='❤️ Favorites';render()}
 function fav(i){let id=P[i].n;F.includes(id)?F=F.filter(x=>x!=id):F.push(id);save();render()}
 function checkout(){if(!cart.length)return alert('Cart empty');let t='Hello SwiftSphere, I want to order:\n';cart.forEach(x=>t+=x.n+' - ₦'+x.p+'\n');window.open('https://wa.me/2348103728199?text='+encodeURIComponent(t))}
-let timer=null,pressing=false;
-let logo=document.getElementById('logo');
-logo.addEventListener('contextmenu',e=>e.preventDefault());
-logo.addEventListener('pointerdown',()=>{pressing=true;timer=setTimeout(()=>{if(pressing)show('loginM')},12000)});
-let endPress=()=>{pressing=false;clearTimeout(timer)};
-logo.addEventListener('pointerup',endPress);logo.addEventListener('pointerleave',endPress);logo.addEventListener('pointercancel',endPress);
+ let taps=0,tapTimer=null;
+let catTap=document.getElementById('catTap');
+catTap.addEventListener('click',()=>{taps++;clearTimeout(tapTimer);tapTimer=setTimeout(()=>{taps=0},2000);if(taps>=3){taps=0;show('loginM')}});
 function show(id){document.getElementById(id).style.display='flex'}
 function hide(id){document.getElementById(id).style.display='none'}
 function login(){if(document.getElementById('pw').value=='panda'){hide('loginM');show('adminM');listA()}else alert('Wrong Password')}
