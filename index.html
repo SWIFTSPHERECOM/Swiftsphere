@@ -68,7 +68,7 @@ catTap.addEventListener('click',()=>{taps++;clearTimeout(tapTimer);tapTimer=setT
 function show(id){document.getElementById(id).style.display='flex'}
 function hide(id){document.getElementById(id).style.display='none'}
 function login(){if(document.getElementById('pw').value=='panda'){hide('loginM');show('adminM');listA()}else alert('Wrong Password')}
-function addP(){let n=document.getElementById('n').value,p=+document.getElementById('p').value,c=document.getElementById('c').value,img=document.getElementById('img').value||'https://picsum.photos/400/300?random='+Date.now();if(!n||!p)return alert('Fill name + price');P.unshift({n,p,c,img});save();render();listA();alert('Added to '+c)}
+function addP(){let n=document.getElementById('n').value,p=+document.getElementById('p').value,c=document.getElementById('c').value,f=document.getElementById('f').files[0],img=document.getElementById('img')?document.getElementById('img').value:'';if(!n||!p)return alert('Fill name + price');let doAdd=(im)=>{P.unshift({n,p,c,img:im||'https://picsum.photos/400/300?random='+Date.now()});save();render();listA();alert('Added to '+c)};if(f){let r=new FileReader();r.onload=e=>doAdd(e.target.result);r.readAsDataURL(f);}else{doAdd(img);}}
 function delP(i){P.splice(i,1);save();render();listA()}
 function listA(){document.getElementById('alist').innerHTML=P.map((x,i)=>`<p>${x.n} - ${x.c} - ₦${x.p} <button onclick="delP(${i})">Delete</button></p>`).join('')}
 function render(){
